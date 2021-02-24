@@ -1,3 +1,6 @@
+"""
+动态学习率 AdaGrad
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 import time
