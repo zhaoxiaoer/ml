@@ -53,6 +53,7 @@ lr_w = 0
 b_history = [b]
 w_history = [w]
 loss_history = []
+err_history = []
 lr_b_history = []
 lr_w_history = []
 start = time.time()
@@ -62,15 +63,18 @@ for i in range(iteration):
     grad_b = 0.0
     grad_w = 0.0
     loss = 0.0
+    err = 0.0
     for n in range(len(x_data)):
         grad_b += -2.0 * (y_data[n] - (b + w * x_data[n])) * 1.0
         grad_w += -2.0 * (y_data[n] - (b + w * x_data[n])) * x_data[n]
         loss += (y_data[n] - (b + w * x_data[n])) ** 2
+        err += abs(y_data[n] - (b + w * x_data[n]))
 
     # 改进3
     grad_b /= len(x_data)
     grad_w /= len(x_data)
     loss /= len(x_data)
+    err /= len(x_data)
     lr_b += grad_b ** 2
     lr_w += grad_w ** 2
 
@@ -82,11 +86,12 @@ for i in range(iteration):
     b_history.append(b)
     w_history.append(w)
     loss_history.append(loss)
+    err_history.append(err)
     lr_b_history.append(lr / np.sqrt(lr_b))
     lr_w_history.append(lr / np.sqrt(lr_w))
 
     if i % 10000 == 0:
-        print("Step %i, w: %0.4f, b: %0.4f, Loss: %0.4f" % (i, w_history[i], b_history[i], loss_history[i]))
+        print("Step %i, w: %0.4f, b: %0.4f, Loss: %0.4f, error: %0.4f" % (i, w_history[i], b_history[i], loss_history[i], err_history[i]))
 
         # 更新图
         fig.clf()
@@ -112,6 +117,10 @@ for i in range(iteration):
         ax5.plot(lr_b_history, label="b_history")
         ax5.plot(lr_w_history, label="w_history")
         ax5.legend()
+
+        ax6 = fig.add_subplot(326)
+        ax6.plot(err_history, label="error")
+        ax6.legend()
 
         plt.pause(0.1)
 
