@@ -52,7 +52,7 @@ test_data = datasets.FashionMNIST(
 #
 # # Preparing your data for training with DataLoaders
 train_dataloader = DataLoader(training_data, batch_size=batch_size, shuffle=True)
-test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
+test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
 # # Iterate through the DataLoader
 # train_features, train_labels = next(iter(train_dataloader))
 # print("Feature batch shape: ", train_features.size())
@@ -95,6 +95,8 @@ for name, param in model.named_parameters():
 
 
 def train_loop(dataloader, model, loss_fn, optimizer):
+    model.train()  # set model to train mode
+
     size = len(dataloader.dataset)
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
@@ -114,10 +116,10 @@ def train_loop(dataloader, model, loss_fn, optimizer):
 
 
 def test_loop(dataloader, model, loss_fn):
-    size = len(dataloader.dataset)
-    model.eval()
-    test_loss, correct = 0, 0
+    model.eval()  # set model to evaluation mode
 
+    size = len(dataloader.dataset)
+    test_loss, correct = 0, 0
     with torch.no_grad():
         for X, y in dataloader:
             X, y = X.to(device), y.to(device)
